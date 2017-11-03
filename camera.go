@@ -26,8 +26,8 @@ type Camera struct {
 	latest, photoDemo, photoVerbose, raw bool
 	timeOut                              bool
 	//Video Specific
-	keypress, penc, signal, timed, videoDemo, videoInline bool
-	videoVerbose                                          bool
+	keypress, penc, photoOutput, signal, timed bool
+	videoDemo, videoInline, videoVerbose       bool
 	//General Floats
 	blueAWBG, redAWBG float64
 	//General Int32
@@ -38,8 +38,8 @@ type Camera struct {
 	roiWidth, roiHeight, saturation, sharpness    int32
 	shutter                                       int32
 	//Photo Specific Int32
-	photoWidth, photoHeight, jpgQuality int32
-	timeLength, timeOutLength           int32
+	photoWidth, photoHeight, quality, jpgQuality int32
+	timeLapse, timeLength, timeOutLength         int32
 	//Video Specific Int32
 	bitRate, frameRate, videoWidth         int32
 	videoHeight, h264Prof, intraReferesh   int32
@@ -223,6 +223,75 @@ func (c *Camera) Annotate(annotate string) *Camera {
 
 func (c *Camera) Output(output string) *Camera {
 	c.output = output
+	return c
+}
+
+//Raspistill (photo) Specific Functions
+/*
+	-
+*/
+func (c *Camera) PhotoWidth(photoWidth int32) *Camera {
+	c.photoWidth = photoWidth
+	return c
+}
+
+func (c *Camera) PhotoHeight(photoHeight int32) *Camera {
+	c.photoHeight = photoHeight
+	return c
+}
+
+func (c *Camera) Quality(quality int32) *Camera {
+	c.quality = quality
+	return c
+}
+
+func (c *Camera) Raw(raw bool) *Camera {
+	c.raw = raw
+	return c
+}
+
+func (c *Camera) PhotoOutput(photoOutput bool) *Camera {
+	c.photoOutput = photoOutput
+	return c
+}
+
+func (c *Camera) Latest(latest bool) *Camera {
+	c.latest = latest
+	return c
+}
+
+func (c *Camera) LatestFileName(latestFileName string) *Camera {
+	c.latestFileName = latestFileName
+	return c
+}
+
+func (c *Camera) PhotoVerbose(photoVerbose bool) *Camera {
+	c.photoVerbose = photoVerbose
+	return c
+}
+
+func (c *Camera) EnableTimeout(timeOut bool) *Camera {
+	c.timeOut = timeOut
+	return c
+}
+
+func (c *Camera) Timeout(timeOutLength int32) *Camera {
+	c.timeOutLength = timeOutLength
+	return c
+}
+
+func (c *Camera) Timelapse(timeLapse int32) *Camera {
+	c.timeLapse = timeLapse
+	return c
+}
+
+func (c *Camera) Timelapse(timeLapse int32) *Camera {
+	c.timeLapse = timeLapse
+	return c
+}
+
+func (c *Camera) VideoVerbose(videoVerbose bool) *Camera {
+	c.videoVerbose = videoVerbose
 	return c
 }
 
