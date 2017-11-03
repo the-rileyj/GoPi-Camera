@@ -23,29 +23,32 @@ type Camera struct {
 	videoStablization, roi, simpleCapture   bool
 	stats                                   bool
 	//Photo Specific
-	latest, photoDemo, photoVerbose, raw bool
-	timeOut, photoTimeLapse              bool
+	latest, photoDemo, photoVerbose, raw, photoSignal, photoOutput bool
+	timeOut, photoTimeLapse, enablePhotoKeypress                   bool
 	//Video Specific
-	keypress, penc, photoOutput, signal, timed bool
-	videoDemo, videoInline, videoVerbose       bool
-	enableBitRate                              bool
+	videoKeypress, penc, videoSignal, timed                bool
+	videoDemo, videoInline, videoVerbose                   bool
+	enableBitRate, enableVideoTimeout, enableVideoKeypress bool
 	//General Floats
 	blueAWBG, redAWBG float64
 	//General Int32
-	brightness, cameraSelection                   int32
-	colorEffectU, colorEffectY, contrast, ev      int32
-	iso, mode, previewOpacity, previewX, previewY int32
-	previewWidth, previewHeight, roiX, roiY       int32
-	roiWidth, roiHeight, saturation, sharpness    int32
-	shutter                                       int32
+	brightness, cameraSelection                int32
+	colorEffectU, colorEffectY, contrast, ev   int32
+	iso, mode, previewOpacity, previewX        int32
+	previewY                                   int32
+	previewWidth, previewHeight, roiX, roiY    int32
+	roiWidth, roiHeight, saturation, sharpness int32
+	shutter                                    int32
 	//Photo Specific Int32
-	demoLength, photoWidth, photoHeight, quality, jpgQuality int32
-	timeLapse, timeLength, timeOutLength, keypressMode       int32
+	jpgQuality, photoDemoLength                 int32
+	photoWidth, photoHeight, photoTimeOutLength int32
+	quality, timeLapse, timeLength              int32
 	//Video Specific Int32
-	bitRate, frameRate, videoWidth         int32
-	videoHeight, h264Prof, intraReferesh   int32
-	quantisation, rotation, segment, start int32
-	timeOn, timeOff, wrap                  int32
+	bitRate, frameRate, h264Prof, intraReferesh int32
+	videoDemoLength, quantisation, rotation     int32
+	segment, start, timeOn, timeOff, videoWidth int32
+	videoHeight, wrap, videoCapTimed            int32
+	videoTimeOutLength, videoWaitTimed          int32
 	//General Strings
 	annotate, awb, dynamicRangeCompression     string
 	exposure, fileName, fileType, imageEffects string
@@ -53,9 +56,9 @@ type Camera struct {
 	simpleCommand                              string
 	//Photo Specific Strings
 	photoEncoding, latestFileName, thumbNail string
-	exif                                     string
+	exif, photoKeypressMode                  string
 	//Video Specific Strings
-	videoProfile, initialState string
+	videoOutput, videoProfile, videoKeypressMode, initialStatevideoKeypressMode string
 }
 
 func New(path, name, fType string) *Camera {
@@ -276,8 +279,8 @@ func (c *Camera) EnableTimeout(timeOut bool) *Camera {
 	return c
 }
 
-func (c *Camera) Timeout(timeOutLength int32) *Camera {
-	c.timeOutLength = timeOutLength
+func (c *Camera) Timeout(photoTimeOutLength int32) *Camera {
+	c.photoTimeOutLength = photoTimeOutLength
 	return c
 }
 
@@ -296,13 +299,13 @@ func (c *Camera) ThumbNail(thumbNail string) *Camera {
 	return c
 }
 
-func (c *Camera) Demo(photoDemo bool) *Camera {
+func (c *Camera) PhotoDemo(photoDemo bool) *Camera {
 	c.photoDemo = photoDemo
 	return c
 }
 
-func (c *Camera) DemoLength(demoLength int32) *Camera {
-	c.demoLength = demoLength
+func (c *Camera) PhotoDemoLength(photoDemoLength int32) *Camera {
+	c.photoDemoLength = photoDemoLength
 	return c
 }
 
@@ -321,13 +324,18 @@ func (c *Camera) FullScreenPreview(fullScreenPreview bool) *Camera {
 	return c
 }
 
-func (c *Camera) KeypressMode(keypressMode int32) *Camera {
-	c.keypressMode = keypressMode
+func (c *Camera) EnablePhotoKeypressMode(enableVideoKeypress bool) *Camera {
+	c.enableVideoKeypress = enableVideoKeypress
 	return c
 }
 
-func (c *Camera) Signal(signal bool) *Camera {
-	c.signal = signal
+func (c *Camera) PhotoKeypressMode(photoKeypressMode string) *Camera {
+	c.photoKeypressMode = photoKeypressMode
+	return c
+}
+
+func (c *Camera) PhotoSignal(photoSignal bool) *Camera {
+	c.photoSignal = photoSignal
 	return c
 }
 
@@ -355,8 +363,99 @@ func (c *Camera) BitRate(bitRate int32) *Camera {
 	return c
 }
 
+func (c *Camera) VideoOutput(videoOutput string) *Camera {
+	c.videoOutput = videoOutput
+	return c
+}
+
 func (c *Camera) VideoVerbose(videoVerbose bool) *Camera {
 	c.videoVerbose = videoVerbose
+	return c
+}
+
+func (c *Camera) EnableVideoTimeout(enableVideoTimeout bool) *Camera {
+	c.enableVideoTimeout = enableVideoTimeout
+	return c
+}
+
+func (c *Camera) VideoTimeOutLength(videoTimeOutLength int32) *Camera {
+	c.videoTimeOutLength = videoTimeOutLength
+	return c
+}
+
+func (c *Camera) VideoDemo(videoDemo bool) *Camera {
+	c.videoDemo = videoDemo
+	return c
+}
+
+func (c *Camera) VideoDemoLength(videoDemoLength int32) *Camera {
+	c.videoDemoLength = videoDemoLength
+	return c
+}
+
+func (c *Camera) FrameRate(frameRate int32) *Camera {
+	c.frameRate = frameRate
+	return c
+}
+
+func (c *Camera) Penc(penc bool) *Camera {
+	c.penc = penc
+	return c
+}
+
+func (c *Camera) IntraReferesh(intraReferesh int32) *Camera {
+	c.intraReferesh = intraReferesh
+	return c
+}
+
+func (c *Camera) Quantisation(quantisation int32) *Camera {
+	c.quantisation = quantisation
+	return c
+}
+
+func (c *Camera) VideoProfile(videoProfile string) *Camera {
+	c.videoProfile = videoProfile
+	return c
+}
+
+func (c *Camera) VideoInline(videoInline bool) *Camera {
+	c.videoInline = videoInline
+	return c
+}
+
+func (c *Camera) videoTimed(capTime, waitTime int32) *Camera {
+	c.videoCapTimed = capTime
+	c.videoWaitTimed = waitTime
+	return c
+}
+
+func (c *Camera) VideoCapTimed(capTime int32) *Camera {
+	c.videoCapTimed = capTime
+	return c
+}
+
+func (c *Camera) VideoKeypressMode(videoKeypressMode string) *Camera {
+	c.videoKeypressMode = videoKeypressMode
+	return c
+}
+
+func (c *Camera) VideoSignal(videoSignal bool) *Camera {
+	c.videoSignal = videoSignal
+	return c
+}
+
+func (c *Camera) Segment(segment int32) *Camera {
+	c.segment = segment
+	return c
+}
+
+func (c *Camera) Wrap(wrap int32) *Camera {
+	c.wrap = wrap
+	return c
+}
+
+func (c *Camera) Start(start int32) *Camera {
+	c.start = start
 	return c
 }
 
