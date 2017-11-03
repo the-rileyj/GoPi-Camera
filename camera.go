@@ -24,10 +24,11 @@ type Camera struct {
 	stats                                   bool
 	//Photo Specific
 	latest, photoDemo, photoVerbose, raw bool
-	timeOut                              bool
+	timeOut, photoTimeLapse              bool
 	//Video Specific
 	keypress, penc, photoOutput, signal, timed bool
 	videoDemo, videoInline, videoVerbose       bool
+	enableBitRate                              bool
 	//General Floats
 	blueAWBG, redAWBG float64
 	//General Int32
@@ -38,8 +39,8 @@ type Camera struct {
 	roiWidth, roiHeight, saturation, sharpness    int32
 	shutter                                       int32
 	//Photo Specific Int32
-	photoWidth, photoHeight, quality, jpgQuality int32
-	timeLapse, timeLength, timeOutLength         int32
+	demoLength, photoWidth, photoHeight, quality, jpgQuality int32
+	timeLapse, timeLength, timeOutLength, keypressMode       int32
 	//Video Specific Int32
 	bitRate, frameRate, videoWidth         int32
 	videoHeight, h264Prof, intraReferesh   int32
@@ -51,8 +52,8 @@ type Camera struct {
 	meteringMode, output, savePath             string
 	simpleCommand                              string
 	//Photo Specific Strings
-	photoEncoding, latestFileName, thumb string
-	exif                                 string
+	photoEncoding, latestFileName, thumbNail string
+	exif                                     string
 	//Video Specific Strings
 	videoProfile, initialState string
 }
@@ -285,8 +286,72 @@ func (c *Camera) Timelapse(timeLapse int32) *Camera {
 	return c
 }
 
-func (c *Camera) Timelapse(timeLapse int32) *Camera {
-	c.timeLapse = timeLapse
+func (c *Camera) PhotoTimeLapse(photoTimeLapse bool) *Camera {
+	c.photoTimeLapse = photoTimeLapse
+	return c
+}
+
+func (c *Camera) ThumbNail(thumbNail string) *Camera {
+	c.thumbNail = thumbNail
+	return c
+}
+
+func (c *Camera) Demo(photoDemo bool) *Camera {
+	c.photoDemo = photoDemo
+	return c
+}
+
+func (c *Camera) DemoLength(demoLength int32) *Camera {
+	c.demoLength = demoLength
+	return c
+}
+
+func (c *Camera) PhotoEncoding(photoEncoding string) *Camera {
+	c.photoEncoding = photoEncoding
+	return c
+}
+
+func (c *Camera) Exif(exif string) *Camera {
+	c.exif = exif
+	return c
+}
+
+func (c *Camera) FullScreenPreview(fullScreenPreview bool) *Camera {
+	c.fullScreenPreview = fullScreenPreview
+	return c
+}
+
+func (c *Camera) KeypressMode(keypressMode int32) *Camera {
+	c.keypressMode = keypressMode
+	return c
+}
+
+func (c *Camera) Signal(signal bool) *Camera {
+	c.signal = signal
+	return c
+}
+
+//Raspivid (video) Specific Functions
+/*
+
+ */
+func (c *Camera) VideoWidth(videoWidth int32) *Camera {
+	c.videoWidth = videoWidth
+	return c
+}
+
+func (c *Camera) VideoHeight(videoHeight int32) *Camera {
+	c.videoHeight = videoHeight
+	return c
+}
+
+func (c *Camera) EnableBitRate(enableBitRate bool) *Camera {
+	c.enableBitRate = enableBitRate
+	return c
+}
+
+func (c *Camera) BitRate(bitRate int32) *Camera {
+	c.bitRate = bitRate
 	return c
 }
 
