@@ -21,6 +21,7 @@ type Camera struct {
 	AWBG, fullScreenPreview, horizontalFlip bool
 	preview, verticalFlip                   bool
 	videoStablization, roi, simpleCapture   bool
+	stats                                   bool
 	//Photo Specific
 	latest, photoDemo, photoVerbose, raw bool
 	timeOut                              bool
@@ -35,7 +36,7 @@ type Camera struct {
 	iso, mode, previewOpacity, previewX, previewY int32
 	previewWidth, previewHeight, roiX, roiY       int32
 	roiWidth, roiHeight, saturation, sharpness    int32
-	shutterSpeed                                  int32
+	shutter                                       int32
 	//Photo Specific Int32
 	photoWidth, photoHeight, jpgQuality int32
 	timeLength, timeOutLength           int32
@@ -45,9 +46,9 @@ type Camera struct {
 	quantisation, rotation, segment, start int32
 	timeOn, timeOff, wrap                  int32
 	//General Strings
-	Annotate, awb, dynamicRangeCompression     string
+	annotate, awb, dynamicRangeCompression     string
 	exposure, fileName, fileType, imageEffects string
-	meteringMode, savePath                     string
+	meteringMode, output, savePath             string
 	simpleCommand                              string
 	//Photo Specific Strings
 	photoEncoding, latestFileName, thumb string
@@ -171,10 +172,57 @@ func (c *Camera) ROI(roi bool) *Camera {
 }
 
 func (c *Camera) ROICoordinates(roiX, roiY, roiWidth, roiHeight int32) *Camera {
-	c.roiX = roiX
-	c.roiY = roiY
-	c.roiWidth = roiWidth
-	c.roiHeight = roiHeight
+	c.roiX, c.roiY, c.roiWidth, c.roiHeight = roiX, roiY, roiWidth, roiHeight
+	return c
+}
+
+func (c *Camera) Shutter(shutter int32) *Camera {
+	c.shutter = shutter
+	return c
+}
+
+func (c *Camera) DynamicRangeCompression(dynamicRangeCompression string) *Camera {
+	c.dynamicRangeCompression = dynamicRangeCompression
+	return c
+}
+
+func (c *Camera) Stats(stats bool) *Camera {
+	c.stats = stats
+	return c
+}
+
+func (c *Camera) AWBGains(blueAWBG, redAWBG float64) *Camera {
+	c.blueAWBG, c.redAWBG = blueAWBG, redAWBG
+	return c
+}
+
+func (c *Camera) BlueAWBG(blueAWBG float64) *Camera {
+	c.blueAWBG = blueAWBG
+	return c
+}
+
+func (c *Camera) RedAWBG(redAWBG float64) *Camera {
+	c.redAWBG = redAWBG
+	return c
+}
+
+func (c *Camera) Mode(mode int32) *Camera {
+	c.mode = mode
+	return c
+}
+
+func (c *Camera) CameraSelection(cameraSelection int32) *Camera {
+	c.cameraSelection = cameraSelection
+	return c
+}
+
+func (c *Camera) Annotate(annotate string) *Camera {
+	c.annotate = annotate
+	return c
+}
+
+func (c *Camera) Output(output string) *Camera {
+	c.output = output
 	return c
 }
 
