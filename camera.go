@@ -477,7 +477,7 @@ func (c *Camera) Capture() (string, error) {
 	_, err := cmd.StdoutPipe()
 	if err != nil {
 		fmt.Println(err)
-	}
+	}3
 	err = cmd.Start()
 	if err != nil {
 		fmt.Println(err)
